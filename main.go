@@ -16,14 +16,20 @@ func main() {
 	defer f.Close()
 	inGif, _ := gif.DecodeAll(f)
 	width := inGif.Config.Width
+	height := inGif.Config.Height
 	image_len := len(inGif.Image)
+	bar_top := false
 	// TODO: Hard code
 	bar_height := 5
 	for i, paletted := range inGif.Image {
 		w := int(float32(width) * ((float32(i)+1)/float32(image_len)))
 		fmt.Println(w)
 		for x := 0; x < w; x++ {
-			for y := 0; y < bar_height; y++ {
+			for h := 0; h < bar_height; h++ {
+				var y = h
+				if !bar_top {
+					y = height - h
+				}
 				// TODO: Hard code bar color
 				paletted.Set(x, y, color.RGBA{204, 204, 204, 255})
 			}
