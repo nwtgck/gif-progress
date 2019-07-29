@@ -5,7 +5,7 @@ import (
 	"image/gif"
 )
 
-func AddProgressBar(inOutGif *gif.GIF, barTop bool, barHeight int) {
+func AddProgressBar(inOutGif *gif.GIF, barTop bool, barHeight int, barColor color.RGBA) {
 	// NOTE: inOutGif is changed destructively
 	width := inOutGif.Config.Width
 	height := inOutGif.Config.Height
@@ -18,8 +18,7 @@ func AddProgressBar(inOutGif *gif.GIF, barTop bool, barHeight int) {
 				if !barTop {
 					y = height - h
 				}
-				// TODO: Hard code bar color
-				paletted.Set(x, y, color.RGBA{204, 204, 204, 255})
+				paletted.Set(x, y, barColor)
 			}
 		}
 	}
