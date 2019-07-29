@@ -24,7 +24,7 @@ func init() {
 var RootCmd = &cobra.Command{
 	Use:   os.Args[0],
 	Short: "gif-progress",
-	Long:  "Attache progress bar to animated Gif",
+	Long:  "Attach progress bar to animated GIF",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Parse color
 		hex, err := colors.ParseHEX(barColorString)
