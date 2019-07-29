@@ -1,0 +1,83 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "on"
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            set -x
+            go build -o gif-progress main/main.go
+            ./gif-progress --help
+
+  build:
+    docker:
+      - image: circleci/golang:1.12
+        environment:
+          GO111MODULE: "on"
+          DIST: "/go/dist"
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            set -x
+            mkdir $DIST
+            # (from: https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04)
+            platforms=("linux/amd64" "darwin/amd64" "windows/amd64")
+            for platform in "${platforms[@]}"
+            do
+                platform_split=(${platform//\// })
+                export GOOS=${platform_split[0]}
+                export GOARCH=${platform_split[1]}
+                BUILD_PATH=gif-progress-$GOOS-$GOARCH
+                mkdir $BUILD_PATH
+                # Build
+                go build -o $BUILD_PATH/gif-progress main/main.go
+                # Create .zip
+                zip -r $DIST/$BUILD_PATH.zip $BUILD_PATH
+                # Create .tar.gz
+                tar zcvf $DIST/$BUILD_PATH.tar.gz $BUILD_PATH
+            done
+      - persist_to_workspace:
+          root: /go/dist
+          paths:
+            - .
+
+  github_release:
+      docker:
+        - image: cibuilds/github:0.10
+      steps:
+        - attach_workspace:
+            at: /go/dist
+        - run:
+            name: Publish Release on GitHub
+            command: |
+              VERSION=$CIRCLE_TAG
+              ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} /go/dist
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test :
+          filters:
+            tags:
+              only: /.*/
+      - build :
+          filters:
+            tags:
+              only: /.*/
+      - github_release:
+          requires:
+            - test
+            - build
+          filters:
+            tags:
+              only: /.+/
+            branches:
+              ignore: /.*/
