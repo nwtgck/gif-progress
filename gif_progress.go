@@ -36,8 +36,9 @@ func AddProgressBar(inOutGif *gif.GIF, barTop bool, barHeight int, barColor colo
 		// Save as previous
 		previousPix = clonePix(newPaletted.Pix)
 
-		// Attach progress bar
+		// Calculate bar width
 		w := int(float32(width) * ((float32(i)+1)/float32(imageLen)))
+		// Attach progress bar
 		for x := 0; x < w; x++ {
 			for h := 0; h < barHeight; h++ {
 				var y = h
@@ -48,7 +49,18 @@ func AddProgressBar(inOutGif *gif.GIF, barTop bool, barHeight int, barColor colo
 			}
 		}
 
+		// Rect of progress bar
+		var barRect image.Rectangle
+		if barTop {
+			barRect = image.Rect(0, 0, w, barHeight)
+		} else  {
+			barRect = image.Rect(0, height - barHeight, w, height)
+		}
+		// Calculate diff image
+		mergedRect := barRect.Union(paletted.Rect)
+		diffImage := newPaletted.SubImage(mergedRect).(*image.Paletted)
+
 		// Update image to new paletted
-		inOutGif.Image[i] = newPaletted
+		inOutGif.Image[i] = diffImage
 	}
 }
