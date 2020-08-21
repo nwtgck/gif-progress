@@ -30,3 +30,8 @@ Flags:
       --bar-top            Bar is on top
   -h, --help               help for gif-progress
 ```
+
+## iOS Version
+<img src="https://raw.githubusercontent.com/aheze/ProgressGif/main/Assets/GitHub/Logo/LogoWithShadow.png" width="200">
+
+A similar, [open-source](https://github.com/aheze/ProgressGif) app called ProgressGif is [available on the App Store](https://apps.apple.com/us/app/id1526969349)! Contributions are welcome.
