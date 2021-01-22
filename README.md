@@ -16,6 +16,22 @@ Generate a gif with bar.
 cat in.gif | gif-progress > out.gif
 ```
 
+Generate a gif with the interactive cli:
+- Download the bash file [gif-progress.sh](https://github.com/nwtgck/gif-progress/#)
+```bash
+./gif-progress.sh
+
+# OR
+
+sh /path/to/gif-progress.sh
+```
+
+If you have problems executing the file make sure it's executable using the following command:
+```bash
+sudo chmod a+x /path/to/gif-progress.sh
+```
+
+
 ## Help
 
 ```txt
@@ -29,4 +45,14 @@ Flags:
       --bar-height int     Bar height (default 5)
       --bar-top            Bar is on top
   -h, --help               help for gif-progress
+  
+Examples: 
+  Change height:
+    cat in.gif | gif-progress --bar-height=15 > out.gif
+  Change color:
+    cat in.gif | gif-progress --bar-color=#07b7ae > out.gif
+  Set bar on top:
+    cat in.gif | gif-progress --bar-top > out.gif
+  Change height and color:
+    cat in.gif | gif-progress --bar-color=#07b7ae --bar-height=15 > out.gif
 ```
